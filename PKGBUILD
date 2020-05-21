@@ -50,10 +50,15 @@ depends=(${ros_depends[@]}
 
 # Tarball version (faster download)
 _dir="moveit-${pkgver}/moveit_ros/planning_interface"
-source=("${pkgname}-${pkgver}.tar.gz"::"https://github.com/ros-planning/moveit/archive/${pkgver}.tar.gz")
-sha256sums=('b0ac91cd4c4dc29d9bd5e3885a1a457252495b3f2bedb46ddfe04154f5ac2358')
+source=("${pkgname}-${pkgver}.tar.gz"::"https://github.com/ros-planning/moveit/archive/${pkgver}.tar.gz"
+  "eigenpy.patch")
+sha256sums=('b0ac91cd4c4dc29d9bd5e3885a1a457252495b3f2bedb46ddfe04154f5ac2358'
+  '797e2415ec9c66b2f7137bb6c0037e4f0ef5520baba7eff3af3eb04119e42b40')
 
 prepare() {
+  cd ${srcdir}/${_dir}
+  patch -uN CMakeLists.txt ${srcdir}/eigenpy.patch || return 1
+
   cd ${srcdir}
   find . \( -iname *.cpp -o -iname *.h \) \
 	  -exec sed -r -i "s/[^_]logError/CONSOLE_BRIDGE_logError/" {} \; \
